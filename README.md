@@ -7,8 +7,9 @@ As you progress through the game, you will explore various environments, includi
 As Fox embarks on his journey, he will encounter other animals who will teach him new skills. These skills include double-jumping, rolling, and attacking.
 
 ## Gameplay Mechanics:
+- Moving: Use WSAD keys to move 
 - Double jump: Press the jump button twice to perform a double jump and reach higher platforms.
-- Rolling: Press the roll button while moving to dodge incoming obstacles and break obstacles.
+- Rolling: Press the roll button to dodge incoming obstacles and break obstacles.
 - Attacking: Press the attack button to use Fox's sharp claws and red tail to defend against enemies.
 
 ## Features
