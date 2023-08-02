@@ -11,6 +11,7 @@ namespace FoxRevenge.UI
     {
         [SerializeField] Color onHoverColor = Color.white;
         [SerializeField] Color onClickColor = Color.yellow;
+        [SerializeField] Color inActiveColor;
         
         [Range(1.0f, 2.0f)]
         [SerializeField] float onHoverScale = 1.2f;
@@ -58,7 +59,13 @@ namespace FoxRevenge.UI
 
         public void ChangeColor(Color newColor)
         {
-            text.color = newColor;
+            if(!this.isActiveAndEnabled) text.color = inActiveColor;
+            else text.color = newColor;
+        }
+
+        public void SetInactiveColor()
+        {
+            text.color = inActiveColor;
         }
 
         private void ChangeScale(float newScale)

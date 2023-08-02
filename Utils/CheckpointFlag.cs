@@ -10,6 +10,7 @@ namespace FoxRevenge.Utils
         [SerializeField] private MeshRenderer flagMesh;
         [SerializeField] private Material activatedFlagMaterial;
         [SerializeField] private Transform checkpointTransform;
+        [SerializeField] private AudioSource audioSource;
 
         private bool isActive = false;
 
@@ -30,6 +31,7 @@ namespace FoxRevenge.Utils
 
             OnActivateDelegate?.Invoke(checkpointTransform);
             isActive = true;
+            audioSource.Play();
         }
 
         private void OnDrawGizmos() 

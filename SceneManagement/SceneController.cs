@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FoxRevenge.Saving;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,12 +10,18 @@ namespace FoxRevenge.SceneManagement
     {
         public void StartNewGame()
         {
+            SavingSystem.ResetPlayerProgress();
             SceneManager.LoadScene("Level1");
         }
 
         public void ReloadScene()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void Continue()
+        {
+
         }
 
         public void LoadMenu()
@@ -30,6 +37,16 @@ namespace FoxRevenge.SceneManagement
         public static void LoadLevel(string levelName)
         {
             SceneManager.LoadScene(levelName);
+        }
+
+        public static void LoadLevel(int levelIndex)
+        {
+            SceneManager.LoadScene(levelIndex);
+        }
+
+        public static void LoadNextLevel()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 }

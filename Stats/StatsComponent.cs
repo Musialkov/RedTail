@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using FoxRevenge.States;
+using FoxRevenge.Audio;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,9 +13,12 @@ namespace FoxRevenge.Stats
         [SerializeField] protected float baseHealth = 100;
         [Range(1, 100)]
         [SerializeField] protected float baseDamage = 100;
+        [SerializeField] protected AudioSource damageAudioSource;
+        [SerializeField] protected SoundsRandomizer damageSounds;
+        
         [SerializeField] protected UnityEvent onDamage;
         [SerializeField] protected UnityEvent onDie;
-        
+
         protected StateComponent stateComponent;
         protected Dictionary<Stat, float> currentStats = new Dictionary<Stat, float>();
 
@@ -41,7 +45,18 @@ namespace FoxRevenge.Stats
             if(currentStats[Stat.Health] <= 0) return;
             currentStats[Stat.Health] -= damage;
 
-            if(currentStats[Stat.Health] > 0 ) onDamage.Invoke();
+            if(currentStats[Stat.Health] > 0 )
+            {
+                if(damageSounds != null)
+                {
+                    var audioInfo = damageSounds.GetRandomAucioCLip();
+                    damageAudioSource.clip = audioInfo.clip;
+                    damageAudioSource.pitch = audioInfo.pitch;
+                    damageAudioSource.volume = audioInfo.volume;
+                }
+
+                onDamage.Invoke();
+            } 
             else 
             {
                 onDie.Invoke();

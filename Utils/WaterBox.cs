@@ -12,7 +12,7 @@ namespace FoxRevenge.Utils
         [SerializeField] float damage;
         private void OnTriggerEnter(Collider other) 
         {
-            if(other.CompareTag("Player"))
+            if(other.CompareTag("Player") && damage > 0)
             {
                 other.GetComponent<PlayerStatsComponent>().TakeDamage(damage);
                 if(other.GetComponent<PlayerStatsComponent>().GetStat(Stat.Health) > 0)

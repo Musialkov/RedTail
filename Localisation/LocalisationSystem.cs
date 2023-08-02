@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using FoxRevenge.Saving;
+
 namespace FoxRevenge.Localisation
 {
     public class LocalisationSystem : MonoBehaviour
     {
-        public static Language currentlanguage = Language.Polish;
+        public static Language currentlanguage;
 
         private static Dictionary<string, string> englishSubtitles;
         private static Dictionary<string, string> polishSubtitles;
@@ -25,6 +27,19 @@ namespace FoxRevenge.Localisation
             polishSubtitles = csvLoader.GetDictionaryValues("pl");
 
             isInit = true;
+            string loadedLanguage = SavingSystem.LoadLanguage();
+            switch(loadedLanguage)
+            {
+                case "English":
+                    currentlanguage = Language.English;
+                    break;
+                case "Polish":
+                    currentlanguage = Language.Polish;
+                    break;
+                default:
+                    currentlanguage = Language.English;
+                    break;
+            }
         }
 
         public static string GetLocalisedValue(string key)
@@ -50,7 +65,8 @@ namespace FoxRevenge.Localisation
             if(currentlanguage != language)
             {
                 currentlanguage = language;
-                 onLanguageChange?.Invoke();
+                SavingSystem.SaveLanguage(language.ToString());
+                onLanguageChange?.Invoke();
             }
         }
     }

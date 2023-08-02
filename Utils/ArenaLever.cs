@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using FoxRevenge.Core;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -11,7 +12,7 @@ namespace FoxRevenge.Utils
 
         private int enemiesToDestroy = 4;
         private bool isPlayed = false;
-        public void Interact()
+        public void Interact(GameObject trigger)
         {
             if(enemiesToDestroy <= 0 && !isPlayed)
             {
@@ -23,6 +24,10 @@ namespace FoxRevenge.Utils
         public void DecreaseEnemiesToDestroy()
         {
             enemiesToDestroy--;
+            if(enemiesToDestroy == 0)
+            {
+                gameObject.AddComponent<HelpObject>().SetHelpType(EHelpType.Lever);
+            }
         }
     }
 }

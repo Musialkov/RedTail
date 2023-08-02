@@ -42,7 +42,7 @@ namespace FoxRevenge.Utils
             }
         }
 
-        public void Interact()
+        public void Interact(GameObject trigger)
         {
             if(isMoving) return;
             EDirection direction = FindInteractDirection();

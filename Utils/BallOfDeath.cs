@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FoxRevenge.Stats;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace FoxRevenge.Utils
 {
@@ -11,7 +12,10 @@ namespace FoxRevenge.Utils
         [SerializeField] private float rotationSpeed = 1f;
         [SerializeField] private float radius = 5f;
         [SerializeField] private bool isMovingForward = true;
+        [SerializeField] private bool shouldRotate = true;
+        [SerializeField] private bool reverseRotation = true;
         [SerializeField] private float damage = 10f;
+        [SerializeField] private UnityEvent onHit;
 
         private float angle;
         private float rotationAngle;
@@ -33,6 +37,7 @@ namespace FoxRevenge.Utils
             if(other.CompareTag("Player"))
             {
                 other.gameObject.GetComponent<PlayerStatsComponent>().TakeDamage(damage);
+                onHit.Invoke();
             }
         }
 
@@ -40,13 +45,17 @@ namespace FoxRevenge.Utils
         {
             float direction = isMovingForward ? 1f : -1f;
             angle += Time.deltaTime * speed * direction;
-            rotationAngle += Time.deltaTime * rotationSpeed * direction * -1;
 
             float z = Mathf.Sin(angle) * radius;
             float y = Mathf.Cos(angle) * radius;
 
             transform.position = new Vector3(0f, y, z) + startPosition;
-            transform.rotation = Quaternion.Euler(rotationAngle, 0f, 0f);
+            if(shouldRotate)
+            {
+                float rotationDirection = reverseRotation ? 1f : -1f;
+                rotationAngle += Time.deltaTime * rotationSpeed * direction * rotationDirection;
+                transform.rotation = Quaternion.Euler(rotationAngle, 0f, 0f);
+            }
 
             if ((isMovingForward && angle >= Mathf.PI + Mathf.PI / 2) || (!isMovingForward && angle <= Mathf.PI / 2))
             {

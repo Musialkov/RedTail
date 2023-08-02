@@ -8,7 +8,7 @@ namespace FoxRevenge.UI
 {
     public class LanguageDropdown : MonoBehaviour
     {
-        void Awake() 
+        void Start() 
         {
             TMP_Dropdown dropdown = transform.GetComponent<TMP_Dropdown>();
             dropdown.options.Clear();
@@ -22,6 +22,20 @@ namespace FoxRevenge.UI
                 dropdown.options.Add(new TMP_Dropdown.OptionData() {text = item});
             }
 
+            switch(LocalisationSystem.currentlanguage)
+            {
+                case Language.English:
+                    dropdown.value = 0;
+                    break;
+                case Language.Polish:
+                    dropdown.value = 1;
+                    break;
+                default:
+                    dropdown.value = 0;
+                    break;
+            }
+            
+            dropdown.captionText.text = items[dropdown.value];
             DropdownItemSelected(dropdown);
             dropdown.onValueChanged.AddListener(delegate {DropdownItemSelected(dropdown);});
         }

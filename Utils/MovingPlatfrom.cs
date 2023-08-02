@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 namespace FoxRevenge.Utils
@@ -22,7 +23,7 @@ namespace FoxRevenge.Utils
             TargetNextWaypoint();
         }
 
-        void FixedUpdate()
+        private void Update() 
         {
             elapsedTime += Time.deltaTime;
 
@@ -46,12 +47,19 @@ namespace FoxRevenge.Utils
 
         private void OnTriggerEnter(Collider other) 
         {
-            other.transform.SetParent(transform);
+            if(!other.CompareTag("NotMoveable"))
+            {
+                other.transform.SetParent(transform);
+            }
+            
         }
 
         private void OnTriggerExit(Collider other) 
         {
-            other.transform.SetParent(null);
+            if(!other.CompareTag("NotMoveable"))
+            {
+                other.transform.SetParent(null);
+            }
         }
     }
 }

@@ -6,6 +6,6 @@ namespace FoxRevenge.Utils
 {
     public interface IInteractable
     {
-        void Interact();
+        void Interact(GameObject trigger);
     }
 }

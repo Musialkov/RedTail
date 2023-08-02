@@ -9,6 +9,8 @@ using FoxRevenge.Utils;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using FoxRevenge.Stats;
+using Cinemachine;
+using FoxRevenge.Saving;
 
 namespace FoxRevenge.Core 
 {
@@ -19,6 +21,7 @@ namespace FoxRevenge.Core
         [SerializeField] private CharacterController characterController;
         [SerializeField] private StateComponent playerState;
         [SerializeField] private StatsComponent playerStats;
+        [SerializeField] CinemachineFreeLook freeLookCinemachine;
 
         [Header("Movement")]
         [SerializeField] private float movementSpeed = 8;
@@ -46,6 +49,8 @@ namespace FoxRevenge.Core
         [SerializeField] private UnityEvent onPause;
         [SerializeField] private UnityEvent onUnPause;
         [SerializeField] private UnityEvent onJump;
+        [SerializeField] private UnityEvent onAttack;
+        [SerializeField] private UnityEvent onDodge;
         
         private Vector2 inputVector;
         private Vector3 moveDirection;
@@ -100,8 +105,16 @@ namespace FoxRevenge.Core
             if(!playerState) playerState = GetComponent<StateComponent>();
             if(!playerStats) playerStats = GetComponent<PlayerStatsComponent>();
 
+            SetCursorVisibility(false);
             onPlayerOnGround += ResetJumping;
             Time.timeScale = 1f;
+
+            float sensitivity = SavingSystem.ReadFloat(SavingKeys.MOUSE_SENSITIVITY);
+            if(freeLookCinemachine)
+            {
+                freeLookCinemachine.m_XAxis.m_MaxSpeed = sensitivity;
+                freeLookCinemachine.m_YAxis.m_MaxSpeed = sensitivity/100;
+            }
         }
         private void Update()
         {
@@ -184,6 +197,7 @@ namespace FoxRevenge.Core
             {
                 playerState.SetNewState(State.Dodging);
                 animator.SetTrigger("Dodge");
+                onDodge.Invoke();
             }
         }
 
@@ -211,12 +225,14 @@ namespace FoxRevenge.Core
                     isGamePaused = false;
                     onUnPause.Invoke();
                     Time.timeScale = 1f;
+                    SetCursorVisibility(false);
                 }
                 else
                 {
                     isGamePaused = true;
                     onPause.Invoke();
                     Time.timeScale = 0f;
+                    SetCursorVisibility(true);
                 }
         }
 
@@ -238,7 +254,7 @@ namespace FoxRevenge.Core
             if(IsSliding) return false;
             if(playerState.GetCurrentState() != State.Jumping) return false;
             if(isGamePaused) return false;
-            //if(SceneManager.GetActiveScene().buildIndex < 2) return false;
+            if(SceneManager.GetActiveScene().buildIndex < 2) return false;
 
             return true;
         }
@@ -248,7 +264,7 @@ namespace FoxRevenge.Core
             if (playerState.GetCurrentState() != State.Grounded) return false;
             if (!characterController.isGrounded) return false;
             if(isGamePaused) return false;
-            //if(SceneManager.GetActiveScene().buildIndex < 3) return false;
+            if(SceneManager.GetActiveScene().buildIndex < 3) return false;
 
             return true;
         }
@@ -256,7 +272,7 @@ namespace FoxRevenge.Core
         private bool CanPerformAttack()
         {
             if(isGamePaused) return false;
-            //if(SceneManager.GetActiveScene().buildIndex < 4) return false;
+            if(SceneManager.GetActiveScene().buildIndex < 4) return false;
             if (playerState.IsCurrentStateEqualTo(new State[]{State.Attacking, State.Grounded})) return true;
                  
             return false;
@@ -297,7 +313,7 @@ namespace FoxRevenge.Core
             foreach(Collider collider in hitColliders)
             {
                 IInteractable interactable = collider.GetComponent<IInteractable>();
-                if(interactable != null) interactable.Interact();
+                if(interactable != null) interactable.Interact(this.gameObject);
             }
         }
 
@@ -311,6 +327,12 @@ namespace FoxRevenge.Core
         {
             Collider[] hitColliders = Physics.OverlapSphere(attackTailCenter.position, attackTailRadius);
             PerformAttackOnProperObjects(hitColliders);
+            
+        }
+
+        public void InvokeAttackEvent()
+        {
+            onAttack.Invoke();
         }
 
         private void PerformAttackOnProperObjects(Collider[] hitColliders)
@@ -320,11 +342,29 @@ namespace FoxRevenge.Core
                 if(collider.CompareTag("Player")) continue;
 
                 IInteractable interactable = collider.GetComponent<IInteractable>();
-                if(interactable != null) interactable.Interact();
+                if(interactable != null) interactable.Interact(this.gameObject);
 
                 StatsComponent stats = collider.GetComponent<StatsComponent>();
                 if(stats != null) stats.TakeDamage(playerStats.GetStat(Stat.Damage));
             }
+        }
+
+        public void SetCursorVisibility(bool visible)
+        {
+            Cursor.visible = visible;
+            if(!visible) Cursor.lockState = CursorLockMode.Locked;
+            else Cursor.lockState = CursorLockMode.None;
+        }
+
+        public void StopTime()
+        {
+            Time.timeScale = 0f;
+        }
+
+        public void PerformDeath()
+        {
+            animator.SetBool("Dead", true);
+            freeLookCinemachine.GetComponent<CinemachineInputProvider>().enabled = false;
         }
     }
 }

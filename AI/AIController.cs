@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using FoxRevenge.Stats;
 using FoxRevenge.States;
+using UnityEngine.Events;
+using FoxRevenge.Audio;
 
 namespace FoxRevenge.AI
 {
@@ -14,24 +16,33 @@ namespace FoxRevenge.AI
         [SerializeField] private StateComponent states;
 
         [Header("Movement")]
-        [SerializeField] private float viewAngle = 120f;
         [SerializeField] private float viewDistance = 10f;
         [SerializeField] private float rotationSpeed = 2f;
+        [SerializeField] private UnityEvent onFootstep;
 
         [Header("Attack")]
         [SerializeField] private float attackInterval = 2f;
         [SerializeField] private float attackRadius = 1f;
         [SerializeField] private Transform attackPoint;
+        [SerializeField] private UnityEvent onAttack;
+
+        [Header("Sounds")]
+        [SerializeField] private SoundsRandomizer attackSounds;
+        [SerializeField] private AudioSource attackAudioSource;
+        [SerializeField] private SoundsRandomizer footstepsSounds;
+        [SerializeField] private AudioSource footstepsAudioSource;
 
         private NavMeshAgent agent;
         private Animator animator;
         private Vector3 beginingPosition;
         private Transform playerTransform;
+        private StateComponent playerState;
         private float timeSinceLastAttack = 0;
         private void Awake() 
         {
             agent = GetComponent<NavMeshAgent>();
             playerTransform = GameObject.FindWithTag("Player").transform;
+            playerState = GameObject.FindWithTag("Player").GetComponent<StateComponent>();
             animator = GetComponent<Animator>();
 
             if(!stats) stats = GetComponent<StatsComponent>();
@@ -46,7 +57,7 @@ namespace FoxRevenge.AI
         private void Update()
         {
             if(states.GetCurrentState() == State.Dead) return;
-            
+
             UpdateMovement();
             UpdateAttack();
             UpdateAnimation();
@@ -54,7 +65,7 @@ namespace FoxRevenge.AI
 
         private void UpdateMovement()
         {
-            if (Vector3.Distance(transform.position, playerTransform.position) < viewDistance)
+            if (Vector3.Distance(transform.position, playerTransform.position) < viewDistance && playerState.GetCurrentState() != State.Dead)
             {
                 agent.SetDestination(playerTransform.position);
             }
@@ -82,6 +93,7 @@ namespace FoxRevenge.AI
         {
             if(Vector3.Distance(transform.position, playerTransform.position) > agent.stoppingDistance) return false;
             if(timeSinceLastAttack < attackInterval) return false;
+            if(playerState.GetCurrentState() == State.Dead) return false;
             return true;
         }
 
@@ -138,6 +150,29 @@ namespace FoxRevenge.AI
                 {
                     hitCollider.gameObject.GetComponent<PlayerStatsComponent>().TakeDamage(stats.GetStat(Stat.Damage));
                 }
+            }
+        }
+
+        private void InvokeFootstepEvent()
+        {
+            PrepareAudioSource(footstepsAudioSource, footstepsSounds);
+            onFootstep.Invoke();
+        }
+
+        private void InvokeAttackEvent()
+        {
+            PrepareAudioSource(attackAudioSource, attackSounds);
+            onAttack.Invoke();
+        }
+
+        private void PrepareAudioSource(AudioSource audioSource, SoundsRandomizer soundsRandomizer)
+        {
+            if(soundsRandomizer != null)
+            {
+                var audioInfo = soundsRandomizer.GetRandomAucioCLip();
+                audioSource.clip = audioInfo.clip;
+                audioSource.pitch = audioInfo.pitch;
+                audioSource.volume = audioInfo.volume;
             }
         }
     }
