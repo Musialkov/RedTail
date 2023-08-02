@@ -18,7 +18,7 @@ As Fox embarks on his journey, he will encounter other animals who will teach hi
 In the near future, a save system and a dialog system will be added to the project.
 
 ## Screenshots
-<img src="https://github.com/Musialkov/Ancient-Evil-RPG-game/assets/69191839/a594a1be-8725-4fe1-8381-51602cf989e1" width="891" height="500">
+<img src="https://github.com/Musialkov/OpenGL-Level-Editor/assets/69191839/70040b2c-63e3-4f74-9f15-33892f0901ea" width="891" height="500">
 <img src="https://github.com/Musialkov/Ancient-Evil-RPG-game/assets/69191839/ed744bee-795d-4065-a144-7436c658f8d0" width="891" height="500">
 <img src="https://github.com/Musialkov/Ancient-Evil-RPG-game/assets/69191839/1997245b-14f5-4990-b201-5b3768e5e429" width="891" height="500">
 <img src="https://github.com/Musialkov/Ancient-Evil-RPG-game/assets/69191839/434c3e7b-3ccb-4ea7-86f7-556a547fe10e" width="891" height="500">
