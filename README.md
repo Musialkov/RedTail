@@ -1,10 +1,14 @@
-# RedTail_WIP
+# RedTail
 
 Welcome to Red Tail, a 3D platform adventure game made with Unity. In this game, you will follow the journey of a fox named Felix, who must find the ingredients for an antidote to cure his friends who have been infected with an unknown disease. 
 
 As you progress through the game, you will explore various environments, including forests, swamps, and snow mountains, to collect the ingredients needed for the antidote. Along the way, you will encounter challenging obstacles and enemies that will test your skills.
 
 As Fox embarks on his journey, he will encounter other animals who will teach him new skills. These skills include double-jumping, rolling, and attacking.
+
+Watch trailer here: https://youtu.be/EJrHUdoTG3E
+
+Download game here: https://itch.io/dashboard
 
 ## Gameplay Mechanics:
 - Moving: Use WSAD keys to move 
