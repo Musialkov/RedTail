@@ -18,8 +18,8 @@ Download game here: https://itch.io/dashboard
 
 ## Features
 - Language switching tool: It provides two language versions - Polish and English.
-
-In the near future, a save system and a dialog system will be added to the project.
+- Saving system
+- Dialog system
 
 ## Screenshots
 <img src="https://github.com/Musialkov/OpenGL-Level-Editor/assets/69191839/70040b2c-63e3-4f74-9f15-33892f0901ea" width="891" height="500">
